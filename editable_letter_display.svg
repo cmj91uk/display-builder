@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="1248" height="1248" viewBox="0 0 1248 1248">
+
+  <defs>
+    <!-- Easy-to-edit colors -->
+    <style>
+      :root {
+        --beige: #ddd0bd;
+        --dot: #e7ded2;
+        --letter: #000000;
+        --background: #ffffff;
+      }
+
+      .letter {
+        font-family: Arial Rounded MT Bold, Arial Black, Arial, Helvetica, sans-serif;
+        font-size: 640px;
+        font-weight: 700;
+        fill: var(--letter);
+        text-anchor: middle;
+        dominant-baseline: middle;
+      }
+    </style>
+
+    <!-- Polka-dot fill -->
+    <pattern id="dots" width="70" height="70" patternUnits="userSpaceOnUse">
+      <rect width="70" height="70" fill="var(--background)"/>
+      <circle cx="20" cy="20" r="8" fill="var(--dot)"/>
+      <circle cx="55" cy="55" r="8" fill="var(--dot)"/>
+    </pattern>
+  </defs>
+
+  <!-- Page background -->
+  <rect width="1248" height="1248" fill="var(--background)"/>
+
+  <!-- Beige bookmark/banner frame -->
+  <path d="
+    M 88 42
+    H 1160
+    V 1224
+    L 624 956
+    L 88 1224
+    Z
+
+    M 174 120
+    H 1074
+    V 1094
+    L 624 866
+    L 174 1094
+    Z
+  "
+  fill="var(--beige)"
+  fill-rule="evenodd"/>
+
+  <!-- Inner dotted panel -->
+  <path d="
+    M 174 120
+    H 1074
+    V 1094
+    L 624 866
+    L 174 1094
+    Z
+  " fill="url(#dots)"/>
+
+  <!--
+    CHANGE THIS CHARACTER ONLY:
+    Replace A with any capital letter A-Z or digit 0-9.
+  -->
+  <text id="display-character"
+        class="letter"
+        x="624"
+        y="530">A</text>
+
+</svg>

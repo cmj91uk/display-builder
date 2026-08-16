@@ -1,0 +1,26 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --color-beige: #ddd0bd;
+  --color-beige-dark: #c4b5a0;
+  --color-dot: #e7ded2;
+  --color-ink: #1a1a1a;
+  --color-paper: #faf8f5;
+  --color-muted: #6b635a;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, #ddd0bd55, transparent),
+    var(--color-paper);
+}
