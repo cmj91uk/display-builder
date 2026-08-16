@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="1248" height="1248" viewBox="0 0 1248 1248">
+
+  <defs>
+    <style>
+      :root {
+        --beige: #ddd0bd;
+        --dot: #e7ded2;
+        --letter: #000000;
+        --background: #ffffff;
+      }
+
+      .letter {
+        font-family: Arial Rounded MT Bold, Arial Black, Arial, Helvetica, sans-serif;
+        font-size: 560px;
+        font-weight: 700;
+        fill: var(--letter);
+        text-anchor: middle;
+        dominant-baseline: middle;
+      }
+    </style>
+
+    <!-- Horizontal line fill -->
+    <pattern id="panel-pattern" width="70" height="32" patternUnits="userSpaceOnUse">
+      <rect width="70" height="32" fill="var(--background)"/>
+      <rect y="11" width="70" height="10" fill="var(--dot)"/>
+    </pattern>
+  </defs>
+
+  <!-- Page background (outside the frame is always white) -->
+  <rect width="1248" height="1248" fill="#ffffff"/>
+
+  <!-- Award-style ribbon frame -->
+  <path d="
+    M 220 70
+    H 1028
+    Q 1108 70 1108 150
+    V 820
+    L 900 980
+    L 780 860
+    L 624 1040
+    L 468 860
+    L 348 980
+    L 140 820
+    V 150
+    Q 140 70 220 70
+    Z
+
+    M 290 150
+    H 958
+    Q 1028 150 1028 210
+    V 760
+    L 880 880
+    L 760 780
+    L 624 920
+    L 488 780
+    L 368 880
+    L 220 760
+    V 210
+    Q 220 150 290 150
+    Z
+  "
+  fill="var(--beige)"
+  fill-rule="evenodd"/>
+
+  <!-- Inner lined panel -->
+  <path d="
+    M 290 150
+    H 958
+    Q 1028 150 1028 210
+    V 760
+    L 880 880
+    L 760 780
+    L 624 920
+    L 488 780
+    L 368 880
+    L 220 760
+    V 210
+    Q 220 150 290 150
+    Z
+  " fill="url(#panel-pattern)"/>
+
+  <text id="display-character"
+        class="letter"
+        x="624"
+        y="470">A</text>
+
+</svg>

@@ -22,7 +22,7 @@
     </style>
 
     <!-- Polka-dot fill -->
-    <pattern id="dots" width="70" height="70" patternUnits="userSpaceOnUse">
+    <pattern id="panel-pattern" width="70" height="70" patternUnits="userSpaceOnUse">
       <rect width="70" height="70" fill="var(--background)"/>
       <circle cx="20" cy="20" r="8" fill="var(--dot)"/>
       <circle cx="55" cy="55" r="8" fill="var(--dot)"/>
@@ -59,7 +59,7 @@
     L 624 866
     L 174 1094
     Z
-  " fill="url(#dots)"/>
+  " fill="url(#panel-pattern)"/>
 
   <!--
     CHANGE THIS CHARACTER ONLY:

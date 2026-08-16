@@ -1,11 +1,11 @@
 export type DisplayColors = {
   /** Beige bookmark / banner frame. */
   beige: string
-  /** Polka-dot fill. */
+  /** Pattern accent (dots, stripes, zigzags, lines). */
   dot: string
   /** Display letter fill. */
   letter: string
-  /** Inner panel fill (inside the frame / behind the dots). */
+  /** Inner panel fill (inside the frame / behind the pattern). */
   background: string
 }
 
@@ -23,7 +23,7 @@ export const DISPLAY_COLOR_FIELDS: {
   label: string
 }[] = [
   { key: 'beige', label: 'Frame' },
-  { key: 'dot', label: 'Dots' },
+  { key: 'dot', label: 'Pattern' },
   { key: 'letter', label: 'Letter' },
   { key: 'background', label: 'Panel' },
 ]

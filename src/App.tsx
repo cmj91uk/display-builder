@@ -20,21 +20,30 @@ import {
   pageCountFor,
   type LettersPerPage,
 } from './lib/pdf'
+import {
+  DEFAULT_TEMPLATE_ID,
+  DISPLAY_TEMPLATES,
+  getDisplayTemplate,
+  type TemplateId,
+} from './lib/templates'
 
 function App() {
   const textId = useId()
   const lettersPerPageId = useId()
   const fontId = useId()
   const colorsId = useId()
+  const styleId = useId()
 
   const [text, setText] = useState('HELLO')
   const [lettersPerPage, setLettersPerPage] = useState<LettersPerPage>(1)
   const [fontOptionId, setFontOptionId] = useState(DEFAULT_FONT_ID)
+  const [templateId, setTemplateId] = useState<TemplateId>(DEFAULT_TEMPLATE_ID)
   const [colors, setColors] = useState<DisplayColors>(DEFAULT_DISPLAY_COLORS)
   const [isGenerating, setIsGenerating] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const selectedFont = getDisplayFont(fontOptionId)
+  const selectedTemplate = getDisplayTemplate(templateId)
   const characters = extractDisplayCharacters(text)
   const pageCount = pageCountFor(text, lettersPerPage)
 
@@ -56,6 +65,7 @@ function App() {
         lettersPerPage,
         fontFamily: selectedFont.family,
         colors,
+        templateId,
         filename: `${slug}-display.pdf`,
       })
     } catch (err) {
@@ -105,6 +115,55 @@ function App() {
               ? ` ${pageCount} page${pageCount === 1 ? '' : 's'} of A4.`
               : ''}
           </p>
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <span id={styleId} className="text-sm font-medium text-ink">
+            Display style
+          </span>
+          <div
+            role="group"
+            aria-labelledby={styleId}
+            className="grid grid-cols-2 gap-3 sm:grid-cols-4"
+          >
+            {DISPLAY_TEMPLATES.map((template) => {
+              const selected = templateId === template.id
+              const previewSvg = buildLetterSvgPreview(
+                'A',
+                selectedFont.family,
+                colors,
+                template.id,
+                `style-${template.id}`,
+              )
+              return (
+                <button
+                  key={template.id}
+                  type="button"
+                  aria-pressed={selected}
+                  onClick={() => setTemplateId(template.id)}
+                  className={[
+                    'overflow-hidden rounded-lg border bg-white text-left transition',
+                    selected
+                      ? 'border-ink ring-2 ring-ink/20'
+                      : 'border-beige-dark/40 hover:border-beige-dark',
+                  ].join(' ')}
+                >
+                  <div
+                    className="aspect-square w-full bg-white p-2 [&_svg]:h-full [&_svg]:w-full"
+                    dangerouslySetInnerHTML={{ __html: previewSvg }}
+                  />
+                  <div className="border-t border-beige-dark/20 px-2 py-2">
+                    <p className="text-sm font-medium text-ink">
+                      {template.label}
+                    </p>
+                    <p className="mt-0.5 text-xs text-muted">
+                      {template.description}
+                    </p>
+                  </div>
+                </button>
+              )
+            })}
+          </div>
         </section>
 
         <section className="grid gap-4 sm:grid-cols-2">
@@ -176,7 +235,11 @@ function App() {
             {DISPLAY_COLOR_FIELDS.map((field) => (
               <ColorField
                 key={field.key}
-                label={field.label}
+                label={
+                  field.key === 'dot'
+                    ? selectedTemplate.patternLabel
+                    : field.label
+                }
                 value={colors[field.key]}
                 presetColors={getPresetColors(field.key)}
                 onChange={(hex) => updateColor(field.key, hex)}
@@ -198,6 +261,7 @@ function App() {
                   char,
                   selectedFont.family,
                   colors,
+                  templateId,
                   `${index}`,
                 )
                 return (
@@ -221,8 +285,9 @@ function App() {
 
         <section className="mt-auto flex flex-col gap-3 border-t border-beige-dark/30 pt-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-muted">
-            {lettersPerPage} {lettersPerPage === 1 ? 'letter' : 'letters'} per
-            A4 page · {selectedFont.label}
+            {selectedTemplate.label} · {lettersPerPage}{' '}
+            {lettersPerPage === 1 ? 'letter' : 'letters'} per A4 page ·{' '}
+            {selectedFont.label}
           </p>
           <div className="flex flex-col items-stretch gap-2 sm:items-end">
             <button

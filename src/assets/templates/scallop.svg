@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="1248" height="1248" viewBox="0 0 1248 1248">
+
+  <defs>
+    <style>
+      :root {
+        --beige: #ddd0bd;
+        --dot: #e7ded2;
+        --letter: #000000;
+        --background: #ffffff;
+      }
+
+      .letter {
+        font-family: Arial Rounded MT Bold, Arial Black, Arial, Helvetica, sans-serif;
+        font-size: 560px;
+        font-weight: 700;
+        fill: var(--letter);
+        text-anchor: middle;
+        dominant-baseline: middle;
+      }
+    </style>
+
+    <!-- Zigzag / chevron fill -->
+    <pattern id="panel-pattern" width="96" height="48" patternUnits="userSpaceOnUse">
+      <rect width="96" height="48" fill="var(--background)"/>
+      <path d="M0 28 L24 10 L48 28 L72 10 L96 28"
+            fill="none"
+            stroke="var(--dot)"
+            stroke-width="8"
+            stroke-linejoin="round"
+            stroke-linecap="round"/>
+      <path d="M0 44 L24 26 L48 44 L72 26 L96 44"
+            fill="none"
+            stroke="var(--dot)"
+            stroke-width="8"
+            stroke-linejoin="round"
+            stroke-linecap="round"/>
+    </pattern>
+  </defs>
+
+  <!-- Page background (outside the frame is always white) -->
+  <rect width="1248" height="1248" fill="#ffffff"/>
+
+  <!-- Bunting string -->
+  <path d="M 70 96 H 1178"
+        fill="none"
+        stroke="var(--beige)"
+        stroke-width="14"
+        stroke-linecap="round"/>
+
+  <!-- Clips on the string -->
+  <rect x="168" y="78" width="28" height="36" rx="6" fill="var(--beige)"/>
+  <rect x="610" y="78" width="28" height="36" rx="6" fill="var(--beige)"/>
+  <rect x="1052" y="78" width="28" height="36" rx="6" fill="var(--beige)"/>
+
+  <!-- Scalloped flag frame -->
+  <path d="
+    M 140 130
+    H 1108
+    V 860
+    A 80 70 0 0 1 948 860
+    A 80 70 0 0 1 788 860
+    A 80 70 0 0 1 628 860
+    A 80 70 0 0 1 468 860
+    A 80 70 0 0 1 308 860
+    A 80 70 0 0 1 148 860
+    A 80 70 0 0 1 140 860
+    Z
+
+    M 220 210
+    H 1028
+    V 800
+    A 60 52 0 0 1 908 800
+    A 60 52 0 0 1 788 800
+    A 60 52 0 0 1 668 800
+    A 60 52 0 0 1 548 800
+    A 60 52 0 0 1 428 800
+    A 60 52 0 0 1 308 800
+    A 60 52 0 0 1 220 800
+    Z
+  "
+  fill="var(--beige)"
+  fill-rule="evenodd"/>
+
+  <!-- Inner zigzag panel -->
+  <path d="
+    M 220 210
+    H 1028
+    V 800
+    A 60 52 0 0 1 908 800
+    A 60 52 0 0 1 788 800
+    A 60 52 0 0 1 668 800
+    A 60 52 0 0 1 548 800
+    A 60 52 0 0 1 428 800
+    A 60 52 0 0 1 308 800
+    A 60 52 0 0 1 220 800
+    Z
+  " fill="url(#panel-pattern)"/>
+
+  <text id="display-character"
+        class="letter"
+        x="624"
+        y="500">A</text>
+
+</svg>

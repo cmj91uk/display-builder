@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="1248" height="1248" viewBox="0 0 1248 1248">
+
+  <defs>
+    <style>
+      :root {
+        --beige: #ddd0bd;
+        --dot: #e7ded2;
+        --letter: #000000;
+        --background: #ffffff;
+      }
+
+      .letter {
+        font-family: Arial Rounded MT Bold, Arial Black, Arial, Helvetica, sans-serif;
+        font-size: 520px;
+        font-weight: 700;
+        fill: var(--letter);
+        text-anchor: middle;
+        dominant-baseline: middle;
+      }
+    </style>
+
+    <!-- Diagonal stripe fill -->
+    <pattern id="panel-pattern" width="44" height="44" patternUnits="userSpaceOnUse" patternTransform="rotate(32)">
+      <rect width="44" height="44" fill="var(--background)"/>
+      <rect x="0" y="0" width="18" height="44" fill="var(--dot)"/>
+    </pattern>
+  </defs>
+
+  <!-- Page background (outside the frame is always white) -->
+  <rect width="1248" height="1248" fill="#ffffff"/>
+
+  <!-- Bunting string -->
+  <path d="M 80 118 Q 624 70 1168 118"
+        fill="none"
+        stroke="var(--beige)"
+        stroke-width="14"
+        stroke-linecap="round"/>
+
+  <!-- String ties -->
+  <circle cx="250" cy="108" r="16" fill="#ffffff" stroke="var(--beige)" stroke-width="10"/>
+  <circle cx="624" cy="88" r="16" fill="#ffffff" stroke="var(--beige)" stroke-width="10"/>
+  <circle cx="998" cy="108" r="16" fill="#ffffff" stroke="var(--beige)" stroke-width="10"/>
+
+  <!-- Pennant frame (outer triangle with inner cutout) -->
+  <path d="
+    M 190 150
+    H 1058
+    L 624 1180
+    Z
+
+    M 275 230
+    H 973
+    L 624 1040
+    Z
+  "
+  fill="var(--beige)"
+  fill-rule="evenodd"/>
+
+  <!-- Inner striped panel -->
+  <path d="
+    M 275 230
+    H 973
+    L 624 1040
+    Z
+  " fill="url(#panel-pattern)"/>
+
+  <text id="display-character"
+        class="letter"
+        x="624"
+        y="500">A</text>
+
+</svg>

@@ -1,10 +1,14 @@
-import letterTemplate from '../assets/editable_letter_display.svg?raw'
 import {
   DEFAULT_DISPLAY_COLORS,
   type DisplayColors,
 } from './colors'
 import { waitForFont } from './fonts'
 import { extractDisplayCharacters } from './letters'
+import {
+  DEFAULT_TEMPLATE_ID,
+  getDisplayTemplate,
+  type TemplateId,
+} from './templates'
 
 export type LettersPerPage = 1 | 2 | 4
 
@@ -14,10 +18,10 @@ export const LETTERS_PER_PAGE_OPTIONS: LettersPerPage[] = [1, 2, 4]
 const SVG_SIZE = 1248
 const PAGE_MARGIN_MM = 12
 const SLOT_GAP_MM = 6
-const LETTER_FONT_SIZE_PX = 640
 const LETTER_FONT_WEIGHT = 700
-const LETTER_CENTER_X = 624
-const LETTER_CENTER_Y = 530
+const DEFAULT_LETTER_FONT_SIZE_PX = 640
+const DEFAULT_LETTER_CENTER_X = 624
+const DEFAULT_LETTER_CENTER_Y = 530
 
 /** Enough detail for A4 classroom printouts without oversized embeds. */
 const PRINT_DPI = 150
@@ -45,16 +49,38 @@ function applyFontFamily(styleText: string, fontFamily: string): string {
 }
 
 function uniqueSvgIds(svgMarkup: string, suffix: string): string {
-  return svgMarkup
-    .replaceAll('id="dots"', `id="dots-${suffix}"`)
-    .replaceAll('url(#dots)', `url(#dots-${suffix})`)
-    .replaceAll('id="display-character"', `id="display-character-${suffix}"`)
+  const ids = [...svgMarkup.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]!)
+  let result = svgMarkup
+  for (const id of ids) {
+    result = result.replaceAll(`id="${id}"`, `id="${id}-${suffix}"`)
+    result = result.replaceAll(`url(#${id})`, `url(#${id}-${suffix})`)
+  }
+  return result
+}
+
+type LetterMetrics = {
+  x: number
+  y: number
+  fontSize: number
+}
+
+function readLetterMetrics(doc: Document): LetterMetrics {
+  const textEl = doc.getElementById('display-character')
+  const x = Number(textEl?.getAttribute('x') ?? DEFAULT_LETTER_CENTER_X)
+  const y = Number(textEl?.getAttribute('y') ?? DEFAULT_LETTER_CENTER_Y)
+  const styleText = doc.querySelector('style')?.textContent ?? ''
+  const fontSizeMatch = styleText.match(/font-size:\s*([\d.]+)px/)
+  const fontSize = fontSizeMatch
+    ? Number(fontSizeMatch[1])
+    : DEFAULT_LETTER_FONT_SIZE_PX
+  return { x, y, fontSize }
 }
 
 type SvgBuildOptions = {
   character: string
   fontFamily: string
   colors: DisplayColors
+  templateSvg: string
   /** Hide glyph so canvas can paint text with page-loaded fonts. */
   hideCharacter?: boolean
   idSuffix?: string
@@ -64,11 +90,12 @@ function buildLetterSvg({
   character,
   fontFamily,
   colors,
+  templateSvg,
   hideCharacter = false,
   idSuffix,
-}: SvgBuildOptions): string {
+}: SvgBuildOptions): { markup: string; metrics: LetterMetrics } {
   const parser = new DOMParser()
-  const doc = parser.parseFromString(letterTemplate, 'image/svg+xml')
+  const doc = parser.parseFromString(templateSvg, 'image/svg+xml')
   const textEl = doc.getElementById('display-character')
   if (!textEl) {
     throw new Error('SVG template missing #display-character')
@@ -83,6 +110,7 @@ function buildLetterSvg({
     styleEl.textContent = applyFontFamily(styleEl.textContent, fontFamily)
   }
 
+  const metrics = readLetterMetrics(doc)
   let markup = applyColors(
     new XMLSerializer().serializeToString(doc.documentElement),
     colors,
@@ -90,7 +118,7 @@ function buildLetterSvg({
   if (idSuffix) {
     markup = uniqueSvgIds(markup, idSuffix)
   }
-  return markup
+  return { markup, metrics }
 }
 
 function loadImage(src: string): Promise<HTMLImageElement> {
@@ -115,15 +143,17 @@ async function renderLetterJpeg(
   character: string,
   fontFamily: string,
   colors: DisplayColors,
+  templateSvg: string,
   pixelSize: number,
 ): Promise<string> {
   await waitForFont(fontFamily)
 
   // Frame via SVG image (no glyph); paint letter with canvas so web fonts work.
-  const frameSvg = buildLetterSvg({
+  const { markup: frameSvg, metrics } = buildLetterSvg({
     character,
     fontFamily,
     colors,
+    templateSvg,
     hideCharacter: true,
   })
   const blob = new Blob([frameSvg], { type: 'image/svg+xml;charset=utf-8' })
@@ -145,14 +175,10 @@ async function renderLetterJpeg(
     ctx.drawImage(img, 0, 0, pixelSize, pixelSize)
 
     ctx.fillStyle = colors.letter
-    ctx.font = `${LETTER_FONT_WEIGHT} ${LETTER_FONT_SIZE_PX * scale}px ${fontFamily}`
+    ctx.font = `${LETTER_FONT_WEIGHT} ${metrics.fontSize * scale}px ${fontFamily}`
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
-    ctx.fillText(
-      character,
-      LETTER_CENTER_X * scale,
-      LETTER_CENTER_Y * scale,
-    )
+    ctx.fillText(character, metrics.x * scale, metrics.y * scale)
 
     return canvas.toDataURL('image/jpeg', JPEG_QUALITY)
   } finally {
@@ -223,6 +249,7 @@ export type GenerateDisplayPdfOptions = {
   lettersPerPage?: LettersPerPage
   fontFamily?: string
   colors?: DisplayColors
+  templateId?: TemplateId
   filename?: string
 }
 
@@ -231,6 +258,7 @@ export async function generateDisplayPdf({
   lettersPerPage = 1,
   fontFamily = '"Baloo 2", sans-serif',
   colors = DEFAULT_DISPLAY_COLORS,
+  templateId = DEFAULT_TEMPLATE_ID,
   filename = 'display-letters.pdf',
 }: GenerateDisplayPdfOptions): Promise<void> {
   const characters = extractDisplayCharacters(text)
@@ -238,6 +266,7 @@ export async function generateDisplayPdf({
     throw new Error('Enter at least one letter or digit to generate a PDF.')
   }
 
+  const template = getDisplayTemplate(templateId)
   const { jsPDF } = await import('jspdf')
   const pdf = new jsPDF({
     orientation: 'portrait',
@@ -271,13 +300,14 @@ export async function generateDisplayPdf({
 
     for (let i = 0; i < chunk.length; i++) {
       const character = chunk[i]!
-      const cacheKey = `${character}|${fontFamily}|${colorCacheKey(colors)}|${pixelSize}`
+      const cacheKey = `${template.id}|${character}|${fontFamily}|${colorCacheKey(colors)}|${pixelSize}`
       let imageData = imageCache.get(cacheKey)
       if (!imageData) {
         imageData = await renderLetterJpeg(
           character,
           fontFamily,
           colors,
+          template.svg,
           pixelSize,
         )
         imageCache.set(cacheKey, imageData)
@@ -294,14 +324,17 @@ export function buildLetterSvgPreview(
   character: string,
   fontFamily: string,
   colors: DisplayColors,
+  templateId: TemplateId,
   idSuffix: string,
 ): string {
+  const template = getDisplayTemplate(templateId)
   return buildLetterSvg({
     character: character.toUpperCase(),
     fontFamily,
     colors,
+    templateSvg: template.svg,
     idSuffix,
-  })
+  }).markup
 }
 
 export function pageCountFor(text: string, lettersPerPage: LettersPerPage): number {
