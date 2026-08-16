@@ -5,7 +5,7 @@ export type DisplayColors = {
   dot: string
   /** Display letter fill. */
   letter: string
-  /** Page / panel background. */
+  /** Inner panel fill (inside the frame / behind the dots). */
   background: string
 }
 
@@ -25,7 +25,7 @@ export const DISPLAY_COLOR_FIELDS: {
   { key: 'beige', label: 'Frame' },
   { key: 'dot', label: 'Dots' },
   { key: 'letter', label: 'Letter' },
-  { key: 'background', label: 'Background' },
+  { key: 'background', label: 'Panel' },
 ]
 
 /** Soft pastels in the same family as the default frame / dots. */

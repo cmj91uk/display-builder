@@ -29,8 +29,8 @@
     </pattern>
   </defs>
 
-  <!-- Page background -->
-  <rect width="1248" height="1248" fill="var(--background)"/>
+  <!-- Page background (outside the frame is always white) -->
+  <rect width="1248" height="1248" fill="#ffffff"/>
 
   <!-- Beige bookmark/banner frame -->
   <path d="

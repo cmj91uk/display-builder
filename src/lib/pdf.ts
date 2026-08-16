@@ -140,7 +140,7 @@ async function renderLetterJpeg(
       throw new Error('Canvas is not available')
     }
 
-    ctx.fillStyle = colors.background
+    ctx.fillStyle = '#ffffff'
     ctx.fillRect(0, 0, pixelSize, pixelSize)
     ctx.drawImage(img, 0, 0, pixelSize, pixelSize)
 
