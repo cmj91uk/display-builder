@@ -10,6 +10,7 @@ export type LettersPerPage = 1 | 2 | 4
 
 export const LETTERS_PER_PAGE_OPTIONS: LettersPerPage[] = [1, 2, 4]
 
+/** Template coordinate space (matches the SVG viewBox). */
 const SVG_SIZE = 1248
 const PAGE_MARGIN_MM = 12
 const SLOT_GAP_MM = 6
@@ -17,6 +18,12 @@ const LETTER_FONT_SIZE_PX = 640
 const LETTER_FONT_WEIGHT = 700
 const LETTER_CENTER_X = 624
 const LETTER_CENTER_Y = 530
+
+/** Enough detail for A4 classroom printouts without oversized embeds. */
+const PRINT_DPI = 150
+const JPEG_QUALITY = 0.82
+const MIN_RENDER_PX = 360
+const MAX_RENDER_PX = 1100
 
 /** Inline CSS vars so SVG→canvas/img rendering is reliable across browsers. */
 function applyColors(svgMarkup: string, colors: DisplayColors): string {
@@ -95,10 +102,20 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   })
 }
 
-async function renderLetterPng(
+function slotSizeToPixels(slotSizeMm: number): number {
+  const px = Math.round((slotSizeMm / 25.4) * PRINT_DPI)
+  return Math.min(MAX_RENDER_PX, Math.max(MIN_RENDER_PX, px))
+}
+
+function colorCacheKey(colors: DisplayColors): string {
+  return `${colors.beige}|${colors.dot}|${colors.letter}|${colors.background}`
+}
+
+async function renderLetterJpeg(
   character: string,
   fontFamily: string,
   colors: DisplayColors,
+  pixelSize: number,
 ): Promise<string> {
   await waitForFont(fontFamily)
 
@@ -111,27 +128,33 @@ async function renderLetterPng(
   })
   const blob = new Blob([frameSvg], { type: 'image/svg+xml;charset=utf-8' })
   const url = URL.createObjectURL(blob)
+  const scale = pixelSize / SVG_SIZE
 
   try {
     const img = await loadImage(url)
     const canvas = document.createElement('canvas')
-    canvas.width = SVG_SIZE
-    canvas.height = SVG_SIZE
+    canvas.width = pixelSize
+    canvas.height = pixelSize
     const ctx = canvas.getContext('2d')
     if (!ctx) {
       throw new Error('Canvas is not available')
     }
+
     ctx.fillStyle = colors.background
-    ctx.fillRect(0, 0, SVG_SIZE, SVG_SIZE)
-    ctx.drawImage(img, 0, 0)
+    ctx.fillRect(0, 0, pixelSize, pixelSize)
+    ctx.drawImage(img, 0, 0, pixelSize, pixelSize)
 
     ctx.fillStyle = colors.letter
-    ctx.font = `${LETTER_FONT_WEIGHT} ${LETTER_FONT_SIZE_PX}px ${fontFamily}`
+    ctx.font = `${LETTER_FONT_WEIGHT} ${LETTER_FONT_SIZE_PX * scale}px ${fontFamily}`
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
-    ctx.fillText(character, LETTER_CENTER_X, LETTER_CENTER_Y)
+    ctx.fillText(
+      character,
+      LETTER_CENTER_X * scale,
+      LETTER_CENTER_Y * scale,
+    )
 
-    return canvas.toDataURL('image/png')
+    return canvas.toDataURL('image/jpeg', JPEG_QUALITY)
   } finally {
     URL.revokeObjectURL(url)
   }
@@ -220,10 +243,14 @@ export async function generateDisplayPdf({
     orientation: 'portrait',
     unit: 'mm',
     format: 'a4',
+    compress: true,
   })
 
   const pageWidth = pdf.internal.pageSize.getWidth()
   const pageHeight = pdf.internal.pageSize.getHeight()
+  const sampleSlots = getSlotRects(lettersPerPage, pageWidth, pageHeight, 1)
+  const pixelSize = slotSizeToPixels(sampleSlots[0]!.size)
+  const imageCache = new Map<string, string>()
 
   for (
     let pageStart = 0;
@@ -243,9 +270,20 @@ export async function generateDisplayPdf({
     )
 
     for (let i = 0; i < chunk.length; i++) {
-      const imageData = await renderLetterPng(chunk[i]!, fontFamily, colors)
+      const character = chunk[i]!
+      const cacheKey = `${character}|${fontFamily}|${colorCacheKey(colors)}|${pixelSize}`
+      let imageData = imageCache.get(cacheKey)
+      if (!imageData) {
+        imageData = await renderLetterJpeg(
+          character,
+          fontFamily,
+          colors,
+          pixelSize,
+        )
+        imageCache.set(cacheKey, imageData)
+      }
       const slot = slots[i]!
-      pdf.addImage(imageData, 'PNG', slot.x, slot.y, slot.size, slot.size)
+      pdf.addImage(imageData, 'JPEG', slot.x, slot.y, slot.size, slot.size)
     }
   }
 
