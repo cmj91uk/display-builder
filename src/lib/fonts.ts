@@ -9,67 +9,10 @@ export type DisplayFont = {
 
 export const DISPLAY_FONTS: DisplayFont[] = [
   {
-    id: 'arial-rounded',
-    label: 'Arial Rounded',
-    family: 'Arial Rounded MT Bold, Arial Black, Arial, Helvetica, sans-serif',
-  },
-  {
-    id: 'arial-black',
-    label: 'Arial Black',
-    family: 'Arial Black, Arial, Helvetica, sans-serif',
-  },
-  {
-    id: 'impact',
-    label: 'Impact',
-    family: 'Impact, Haettenschweiler, Arial Narrow, sans-serif',
-  },
-  {
-    id: 'georgia',
-    label: 'Georgia',
-    family: 'Georgia, Times New Roman, Times, serif',
-  },
-  {
-    id: 'times',
-    label: 'Times New Roman',
-    family: 'Times New Roman, Times, serif',
-  },
-  {
-    id: 'verdana',
-    label: 'Verdana',
-    family: 'Verdana, Geneva, sans-serif',
-  },
-  {
-    id: 'trebuchet',
-    label: 'Trebuchet MS',
-    family: 'Trebuchet MS, Helvetica, sans-serif',
-  },
-  {
-    id: 'comic',
-    label: 'Comic Sans',
-    family: 'Comic Sans MS, Comic Sans, cursive',
-  },
-  {
-    id: 'courier',
-    label: 'Courier New',
-    family: 'Courier New, Courier, monospace',
-  },
-  {
-    id: 'fredoka',
-    label: 'Fredoka',
-    family: 'Fredoka, sans-serif',
-    google: 'Fredoka:wght@600;700',
-  },
-  {
-    id: 'nunito',
-    label: 'Nunito',
-    family: 'Nunito, sans-serif',
-    google: 'Nunito:wght@700;800',
-  },
-  {
-    id: 'baloo',
-    label: 'Baloo 2',
-    family: '"Baloo 2", sans-serif',
-    google: 'Baloo+2:wght@700;800',
+    id: 'rubik',
+    label: 'Rubik',
+    family: 'Rubik, sans-serif',
+    google: 'Rubik:wght@600;700',
   },
   {
     id: 'passion',
@@ -78,17 +21,78 @@ export const DISPLAY_FONTS: DisplayFont[] = [
     google: 'Passion+One:wght@400;700',
   },
   {
-    id: 'rubik',
-    label: 'Rubik',
-    family: 'Rubik, sans-serif',
-    google: 'Rubik:wght@600;700',
+    id: 'baloo',
+    label: 'Baloo 2',
+    family: '"Baloo 2", sans-serif',
+    google: 'Baloo+2:wght@700;800',
+  },
+  {
+    id: 'nunito',
+    label: 'Nunito',
+    family: 'Nunito, sans-serif',
+    google: 'Nunito:wght@700;800',
+  },
+  {
+    id: 'fredoka',
+    label: 'Fredoka',
+    family: 'Fredoka, sans-serif',
+    google: 'Fredoka:wght@600;700',
+  },
+  {
+    id: 'courier',
+    label: 'Courier New',
+    family: 'Courier New, Courier, monospace',
+  },
+  {
+    id: 'comic',
+    label: 'Comic Sans',
+    family: 'Comic Sans MS, Comic Sans, cursive',
+  },
+  {
+    id: 'trebuchet',
+    label: 'Trebuchet MS',
+    family: 'Trebuchet MS, Helvetica, sans-serif',
+  },
+  {
+    id: 'verdana',
+    label: 'Verdana',
+    family: 'Verdana, Geneva, sans-serif',
+  },
+  {
+    id: 'times',
+    label: 'Times New Roman',
+    family: 'Times New Roman, Times, serif',
+  },
+  {
+    id: 'georgia',
+    label: 'Georgia',
+    family: 'Georgia, Times New Roman, Times, serif',
+  },
+  {
+    id: 'impact',
+    label: 'Impact',
+    family: 'Impact, Haettenschweiler, Arial Narrow, sans-serif',
+  },
+  {
+    id: 'arial-black',
+    label: 'Arial Black',
+    family: 'Arial Black, Arial, Helvetica, sans-serif',
+  },
+  {
+    id: 'arial-rounded',
+    label: 'Arial Rounded',
+    family: 'Arial Rounded MT Bold, Arial Black, Arial, Helvetica, sans-serif',
   },
 ]
 
-export const DEFAULT_FONT_ID = 'arial-rounded'
+export const DEFAULT_FONT_ID = 'baloo'
 
 export function getDisplayFont(id: string): DisplayFont {
-  return DISPLAY_FONTS.find((font) => font.id === id) ?? DISPLAY_FONTS[0]!
+  return (
+    DISPLAY_FONTS.find((font) => font.id === id) ??
+    DISPLAY_FONTS.find((font) => font.id === DEFAULT_FONT_ID) ??
+    DISPLAY_FONTS[0]!
+  )
 }
 
 /** Primary family name for document.fonts.load / canvas. */

@@ -206,7 +206,7 @@ export type GenerateDisplayPdfOptions = {
 export async function generateDisplayPdf({
   text,
   lettersPerPage = 1,
-  fontFamily = 'Arial Rounded MT Bold, Arial Black, Arial, Helvetica, sans-serif',
+  fontFamily = '"Baloo 2", sans-serif',
   colors = DEFAULT_DISPLAY_COLORS,
   filename = 'display-letters.pdf',
 }: GenerateDisplayPdfOptions): Promise<void> {

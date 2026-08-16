@@ -160,7 +160,7 @@ export function FontPicker({
           role="listbox"
           aria-label="Letter fonts"
           aria-activedescendant={`${listboxId}-option-${activeIndex}`}
-          className="absolute z-20 mt-1 max-h-64 w-full overflow-auto rounded-lg border border-beige-dark/40 bg-white py-1 shadow-lg"
+          className="font-picker-scroll absolute z-20 mt-1 max-h-64 w-full overflow-y-scroll rounded-lg border border-beige-dark/40 bg-white py-1 shadow-lg"
         >
           {DISPLAY_FONTS.map((font, index) => {
             const selected = font.id === value
