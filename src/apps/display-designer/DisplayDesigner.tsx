@@ -1,4 +1,6 @@
 import { useEffect, useId, useState } from 'react'
+import { Link } from 'react-router'
+import { useDocumentTitle } from '../../useDocumentTitle'
 import { ColorField } from './components/ColorField'
 import { FontPicker } from './components/FontPicker'
 import {
@@ -27,7 +29,9 @@ import {
   type TemplateId,
 } from './lib/templates'
 
-function App() {
+export function DisplayDesigner() {
+  useDocumentTitle('Display Designer')
+
   const textId = useId()
   const lettersPerPageId = useId()
   const fontId = useId()
@@ -78,6 +82,12 @@ function App() {
   return (
     <div className="mx-auto flex min-h-svh max-w-3xl flex-col px-4 py-10 sm:px-6">
       <header className="mb-10">
+        <Link
+          to="/"
+          className="mb-4 inline-block text-sm font-medium text-muted transition hover:text-ink"
+        >
+          ← All apps
+        </Link>
         <p className="mb-2 text-sm font-medium tracking-wide text-muted uppercase">
           School display
         </p>
@@ -309,5 +319,3 @@ function App() {
     </div>
   )
 }
-
-export default App
