@@ -6,6 +6,8 @@ type ColorFieldProps = {
   value: string
   presetColors: string[]
   onChange: (hex: string) => void
+  compact?: boolean
+  showLabel?: boolean
 }
 
 export function ColorField({
@@ -13,6 +15,8 @@ export function ColorField({
   value,
   presetColors,
   onChange,
+  compact = false,
+  showLabel = true,
 }: ColorFieldProps) {
   const labelId = useId()
   const rootRef = useRef<HTMLDivElement>(null)
@@ -51,28 +55,51 @@ export function ColorField({
         aria-expanded={open}
         aria-haspopup="dialog"
         onClick={() => setOpen((current) => !current)}
-        className="flex w-full items-center gap-3 rounded-lg border border-beige-dark/40 bg-white px-3 py-2.5 text-left outline-none ring-beige-dark/30 focus:ring-2"
+        className={
+          compact
+            ? 'flex size-10 shrink-0 items-center justify-center rounded-lg border border-beige-dark/40 bg-white outline-none ring-beige-dark/30 focus:ring-2'
+            : 'flex w-full items-center gap-3 rounded-lg border border-beige-dark/40 bg-white px-3 py-2.5 text-left outline-none ring-beige-dark/30 focus:ring-2'
+        }
       >
         <span
-          className="size-8 shrink-0 rounded-md border border-black/10 shadow-inner"
+          className={
+            compact
+              ? 'size-6 rounded-md border border-black/10 shadow-inner'
+              : 'size-8 shrink-0 rounded-md border border-black/10 shadow-inner'
+          }
           style={{ backgroundColor: value }}
           aria-hidden="true"
         />
-        <span className="min-w-0">
-          <span id={labelId} className="block text-sm font-medium text-ink">
+        {compact || !showLabel ? (
+          <span id={labelId} className="sr-only">
             {label}
           </span>
-          <span className="block truncate font-mono text-xs uppercase text-muted">
+        ) : (
+          <span className="min-w-0">
+            <span id={labelId} className="block text-sm font-medium text-ink">
+              {label}
+            </span>
+            <span className="block truncate font-mono text-xs uppercase text-muted">
+              {value}
+            </span>
+          </span>
+        )}
+        {!compact && !showLabel ? (
+          <span className="min-w-0 truncate font-mono text-xs uppercase text-muted">
             {value}
           </span>
-        </span>
+        ) : null}
       </button>
 
       {open ? (
         <div
           role="dialog"
           aria-label={`${label} colour`}
-          className="absolute top-full left-0 z-30 mt-2"
+          className={
+            compact
+              ? 'absolute top-full right-0 z-30 mt-2'
+              : 'absolute top-full left-0 z-30 mt-2'
+          }
         >
           <Sketch
             color={value}

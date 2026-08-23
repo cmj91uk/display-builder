@@ -12,6 +12,9 @@ type FontPickerProps = {
   value: string
   onChange: (fontId: string) => void
   selectedFont: DisplayFont
+  /** When true, font names are shown in uppercase (display letters). */
+  uppercasePreview?: boolean
+  listLabel?: string
 }
 
 export function FontPicker({
@@ -19,6 +22,8 @@ export function FontPicker({
   value,
   onChange,
   selectedFont,
+  uppercasePreview = true,
+  listLabel = 'Letter fonts',
 }: FontPickerProps) {
   const listboxId = useId()
   const rootRef = useRef<HTMLDivElement>(null)
@@ -143,7 +148,10 @@ export function FontPicker({
         className="flex w-full items-center justify-between gap-3 rounded-lg border border-beige-dark/40 bg-white px-3 py-2.5 text-left text-ink outline-none ring-beige-dark/30 focus:ring-2"
       >
         <span
-          className="truncate text-lg leading-tight uppercase"
+          className={[
+            'truncate text-lg leading-tight',
+            uppercasePreview ? 'uppercase' : '',
+          ].join(' ')}
           style={{ fontFamily: selectedFont.family }}
         >
           {selectedFont.label}
@@ -158,7 +166,7 @@ export function FontPicker({
           ref={listRef}
           id={listboxId}
           role="listbox"
-          aria-label="Letter fonts"
+          aria-label={listLabel}
           aria-activedescendant={`${listboxId}-option-${activeIndex}`}
           className="font-picker-scroll absolute z-20 mt-1 max-h-64 w-full overflow-y-scroll rounded-lg border border-beige-dark/40 bg-white py-1 shadow-lg"
         >
@@ -175,7 +183,8 @@ export function FontPicker({
                 onMouseEnter={() => setActiveIndex(index)}
                 onClick={() => selectFont(font.id)}
                 className={[
-                  'cursor-pointer px-3 py-2.5 text-lg leading-tight uppercase',
+                  'cursor-pointer px-3 py-2.5 text-lg leading-tight',
+                  uppercasePreview ? 'uppercase' : '',
                   active ? 'bg-beige/60' : '',
                   selected ? 'text-ink' : 'text-ink/90',
                 ].join(' ')}

@@ -12,7 +12,7 @@ export const DISPLAY_FONTS: DisplayFont[] = [
     id: 'rubik',
     label: 'Rubik',
     family: 'Rubik, sans-serif',
-    google: 'Rubik:wght@600;700',
+    google: 'Rubik:wght@400;600;700',
   },
   {
     id: 'passion',
@@ -24,19 +24,19 @@ export const DISPLAY_FONTS: DisplayFont[] = [
     id: 'baloo',
     label: 'Baloo 2',
     family: '"Baloo 2", sans-serif',
-    google: 'Baloo+2:wght@700;800',
+    google: 'Baloo+2:wght@400;600;700;800',
   },
   {
     id: 'nunito',
     label: 'Nunito',
     family: 'Nunito, sans-serif',
-    google: 'Nunito:wght@700;800',
+    google: 'Nunito:wght@400;600;700;800',
   },
   {
     id: 'fredoka',
     label: 'Fredoka',
     family: 'Fredoka, sans-serif',
-    google: 'Fredoka:wght@600;700',
+    google: 'Fredoka:wght@400;600;700',
   },
   {
     id: 'courier',

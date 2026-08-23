@@ -1,5 +1,6 @@
 import { createBrowserRouter } from 'react-router'
 import { DisplayDesigner } from './apps/display-designer/DisplayDesigner'
+import { DrawerLabels } from './apps/drawer-labels/DrawerLabels'
 import { App } from './App'
 import { LandingPage } from './pages/LandingPage'
 import { NotFoundPage } from './pages/NotFoundPage'
@@ -15,6 +16,7 @@ export const router = createBrowserRouter(
       children: [
         { index: true, Component: LandingPage },
         { path: 'apps/display-designer', Component: DisplayDesigner },
+        { path: 'apps/drawer-labels', Component: DrawerLabels },
         { path: '*', Component: NotFoundPage },
       ],
     },
