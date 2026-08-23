@@ -18,6 +18,12 @@ import {
   pageCountFor,
   type DrawerLabel,
 } from './lib/pdf'
+import {
+  loadSavedProjects,
+  persistSavedProjects,
+  projectNameFromLabels,
+  type DrawerLabelsProject,
+} from './lib/projects'
 
 function createLabel(name: string, color: string): DrawerLabel {
   return {
@@ -27,23 +33,41 @@ function createLabel(name: string, color: string): DrawerLabel {
   }
 }
 
+function formatSavedAt(iso: string): string {
+  const date = new Date(iso)
+  if (Number.isNaN(date.getTime())) {
+    return ''
+  }
+  return date.toLocaleDateString(undefined, {
+    day: 'numeric',
+    month: 'short',
+  })
+}
+
 export function DrawerLabels() {
   useDocumentTitle('Drawer Labels')
 
   const nameId = useId()
   const fontId = useId()
+  const projectNameId = useId()
   const nameInputRef = useRef<HTMLInputElement>(null)
 
   const [draftName, setDraftName] = useState('')
+  const [projectName, setProjectName] = useState('')
   const [fontOptionId, setFontOptionId] = useState(DEFAULT_FONT_ID)
   const [defaultColor, setDefaultColor] = useState(DEFAULT_LABEL_COLOR)
   const [labels, setLabels] = useState<DrawerLabel[]>([])
+  const [projects, setProjects] = useState<DrawerLabelsProject[]>(loadSavedProjects)
+  const [activeProjectId, setActiveProjectId] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [saveNotice, setSaveNotice] = useState<string | null>(null)
 
   const selectedFont = getDisplayFont(fontOptionId)
   const pageCount = pageCountFor(labels.length)
   const canAdd = draftName.trim().length > 0
+  const canSave = labels.length > 0
+  const isNewProject = activeProjectId === null
 
   useEffect(() => {
     ensureDisplayFontsLoaded()
@@ -57,6 +81,7 @@ export function DrawerLabels() {
     setLabels((current) => [...current, createLabel(name, defaultColor)])
     setDraftName('')
     setError(null)
+    setSaveNotice(null)
     nameInputRef.current?.focus()
   }
 
@@ -64,20 +89,91 @@ export function DrawerLabels() {
     setLabels((current) =>
       current.map((label) => (label.id === id ? { ...label, ...patch } : label)),
     )
+    setSaveNotice(null)
   }
 
   function removeLabel(id: string) {
     setLabels((current) => current.filter((label) => label.id !== id))
+    setSaveNotice(null)
+  }
+
+  function startNewProject() {
+    setActiveProjectId(null)
+    setProjectName('')
+    setDraftName('')
+    setFontOptionId(DEFAULT_FONT_ID)
+    setDefaultColor(DEFAULT_LABEL_COLOR)
+    setLabels([])
+    setError(null)
+    setSaveNotice(null)
+  }
+
+  function openProject(project: DrawerLabelsProject) {
+    setActiveProjectId(project.id)
+    setProjectName(project.name)
+    setDraftName('')
+    setFontOptionId(project.fontOptionId)
+    setDefaultColor(project.defaultColor)
+    setLabels(project.labels)
+    setError(null)
+    setSaveNotice(null)
+  }
+
+  function saveProject() {
+    if (!canSave) {
+      return
+    }
+
+    const name = projectName.trim() || projectNameFromLabels(labels)
+    const next: DrawerLabelsProject = {
+      id: activeProjectId ?? crypto.randomUUID(),
+      name,
+      savedAt: new Date().toISOString(),
+      fontOptionId,
+      defaultColor,
+      labels,
+    }
+
+    try {
+      const updated = [next, ...projects.filter((project) => project.id !== next.id)]
+      persistSavedProjects(updated)
+      setProjects(updated)
+      setActiveProjectId(next.id)
+      setProjectName(name)
+      setError(null)
+      setSaveNotice('Saved in this browser.')
+    } catch {
+      setError('Could not save this project in the browser.')
+      setSaveNotice(null)
+    }
+  }
+
+  function deleteProject(id: string) {
+    try {
+      const updated = projects.filter((project) => project.id !== id)
+      persistSavedProjects(updated)
+      setProjects(updated)
+      if (activeProjectId === id) {
+        startNewProject()
+      }
+    } catch {
+      setError('Could not remove this project.')
+    }
   }
 
   async function handleDownload() {
     setError(null)
     setIsGenerating(true)
     try {
+      const slug = (projectName.trim() || projectNameFromLabels(labels))
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '')
+        .slice(0, 40)
       await generateDrawerLabelsPdf({
         labels,
         fontFamily: selectedFont.family,
-        filename: 'drawer-labels.pdf',
+        filename: `${slug || 'drawer-labels'}.pdf`,
       })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not generate PDF.')
@@ -114,6 +210,98 @@ export function DrawerLabels() {
       </header>
 
       <main className="flex flex-1 flex-col gap-8">
+        <section className="flex flex-col gap-3">
+          <h2 className="text-sm font-medium text-ink">Projects</h2>
+          <ul className="flex gap-3 overflow-x-auto pb-1">
+            <li className="shrink-0">
+              <button
+                type="button"
+                aria-pressed={isNewProject}
+                onClick={startNewProject}
+                className={[
+                  'flex h-24 w-36 flex-col items-start justify-between rounded-xl border p-3 text-left transition',
+                  isNewProject
+                    ? 'border-ink bg-white ring-2 ring-ink/20'
+                    : 'border-beige-dark/40 bg-white hover:border-beige-dark',
+                ].join(' ')}
+              >
+                <span className="text-sm font-semibold text-ink">New project</span>
+                <span className="text-xs text-muted">Blank sheet</span>
+              </button>
+            </li>
+            {projects.map((project) => {
+              const selected = project.id === activeProjectId
+              return (
+                <li key={project.id} className="shrink-0">
+                  <div
+                    className={[
+                      'relative flex h-24 w-40 flex-col rounded-xl border bg-white p-3 text-left transition',
+                      selected
+                        ? 'border-ink ring-2 ring-ink/20'
+                        : 'border-beige-dark/40 hover:border-beige-dark',
+                    ].join(' ')}
+                  >
+                    <button
+                      type="button"
+                      aria-pressed={selected}
+                      onClick={() => openProject(project)}
+                      className="flex min-h-0 flex-1 flex-col items-start text-left"
+                    >
+                      <span className="w-full truncate text-sm font-semibold text-ink">
+                        {project.name}
+                      </span>
+                      <span className="mt-1 text-xs text-muted">
+                        {project.labels.length} label
+                        {project.labels.length === 1 ? '' : 's'}
+                        {formatSavedAt(project.savedAt)
+                          ? ` · ${formatSavedAt(project.savedAt)}`
+                          : ''}
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      aria-label={`Delete ${project.name}`}
+                      onClick={() => deleteProject(project.id)}
+                      className="absolute top-1.5 right-1.5 rounded px-1.5 py-0.5 text-xs text-muted hover:bg-beige/60 hover:text-ink"
+                    >
+                      ×
+                    </button>
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+          <form
+            className="flex gap-2"
+            onSubmit={(event) => {
+              event.preventDefault()
+              saveProject()
+            }}
+          >
+            <input
+              id={projectNameId}
+              type="text"
+              value={projectName}
+              autoComplete="off"
+              spellCheck={false}
+              placeholder="Project name (optional)"
+              onChange={(event) => {
+                setProjectName(event.target.value)
+                setSaveNotice(null)
+              }}
+              className="w-full rounded-lg border border-beige-dark/40 bg-white px-4 py-3 text-base text-ink outline-none ring-beige-dark/30 placeholder:text-muted/50 focus:ring-2"
+            />
+            <button
+              type="submit"
+              disabled={!canSave}
+              className="shrink-0 rounded-lg bg-ink px-5 py-3 text-sm font-semibold text-white transition enabled:hover:bg-ink/90 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Save
+            </button>
+          </form>
+          {saveNotice ? <p className="text-sm text-muted">{saveNotice}</p> : null}
+        </section>
+
         <section className="grid gap-4 sm:grid-cols-2">
           <div className="flex flex-col gap-2">
             <label htmlFor={fontId} className="text-sm font-medium text-ink">
@@ -123,7 +311,10 @@ export function DrawerLabels() {
               id={fontId}
               value={fontOptionId}
               selectedFont={selectedFont}
-              onChange={setFontOptionId}
+              onChange={(id) => {
+                setFontOptionId(id)
+                setSaveNotice(null)
+              }}
               uppercasePreview={false}
               listLabel="Label fonts"
             />
@@ -134,7 +325,10 @@ export function DrawerLabels() {
               label="Default colour"
               value={defaultColor}
               presetColors={LABEL_COLOR_PRESETS}
-              onChange={setDefaultColor}
+              onChange={(hex) => {
+                setDefaultColor(hex)
+                setSaveNotice(null)
+              }}
               showLabel={false}
             />
           </div>
