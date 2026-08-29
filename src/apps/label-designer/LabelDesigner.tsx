@@ -3,7 +3,8 @@ import { useFieldArray, useForm, useWatch } from 'react-hook-form'
 import { Link } from 'react-router'
 import { ColorField } from '../display-designer/components/ColorField'
 import { useDocumentTitle } from '../../useDocumentTitle'
-import { CONTROL_SHELL_CLASS, SelectMenu } from './components/SelectMenu'
+import { DatePicker } from './components/DatePicker'
+import { SelectMenu } from './components/SelectMenu'
 import { SheetLayoutPicker } from './components/SheetLayoutPicker'
 import { DEFAULT_LABEL_COLOR, LABEL_COLOR_PRESETS } from './lib/colors'
 import { LABEL_FORMATS } from './lib/formats'
@@ -322,31 +323,26 @@ export function LabelDesigner() {
                     >
                       Date
                     </label>
-                    <div className={`${CONTROL_SHELL_CLASS} overflow-hidden`}>
-                      <span
-                        className={[
-                          'pointer-events-none absolute inset-0 flex items-center px-3 text-sm font-medium',
-                          labels?.[index]?.date ? 'text-ink' : 'text-muted',
-                        ].join(' ')}
-                      >
-                        {labels?.[index]?.date
-                          ? labels[index].date.split('-').reverse().join('/')
-                          : 'Choose a date'}
-                      </span>
-                      <input
-                        id={`date-${field.id}`}
-                        type="date"
-                        className="absolute inset-0 h-full w-full cursor-pointer opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0"
-                        {...register(`labels.${index}.date`, {
-                          validate: (value) => {
-                            if (useDate && !value) {
-                              return 'Date is required when Include date is checked'
-                            }
-                            return true
-                          },
-                        })}
-                      />
-                    </div>
+                    <DatePicker
+                      id={`date-${field.id}`}
+                      value={labels?.[index]?.date ?? ''}
+                      onChange={(nextValue) =>
+                        setValue(`labels.${index}.date`, nextValue, {
+                          shouldValidate: true,
+                        })
+                      }
+                    />
+                    <input
+                      type="hidden"
+                      {...register(`labels.${index}.date`, {
+                        validate: (value) => {
+                          if (useDate && !value) {
+                            return 'Date is required when Include date is checked'
+                          }
+                          return true
+                        },
+                      })}
+                    />
                     {errors.labels?.[index]?.date ? (
                       <p className="text-sm text-red-700" role="alert">
                         {errors.labels[index].date.message}

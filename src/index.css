@@ -49,3 +49,92 @@ body {
 .font-picker-scroll::-webkit-scrollbar-thumb:hover {
   background: var(--color-ink);
 }
+
+.label-date-calendar.react-calendar {
+  width: 17.5rem;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  line-height: 1.2;
+}
+
+.label-date-calendar .react-calendar__navigation {
+  margin-bottom: 0.5rem;
+  height: 2.25rem;
+}
+
+.label-date-calendar .react-calendar__navigation button {
+  min-width: 2.25rem;
+  color: var(--color-ink);
+  background: transparent;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.label-date-calendar .react-calendar__navigation button:enabled:hover,
+.label-date-calendar .react-calendar__navigation button:enabled:focus {
+  background: var(--color-dot);
+}
+
+.label-date-calendar .react-calendar__navigation button:disabled {
+  background: transparent;
+  color: var(--color-muted);
+  opacity: 0.5;
+}
+
+.label-date-calendar .react-calendar__month-view__weekdays {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.label-date-calendar .react-calendar__month-view__weekdays__weekday {
+  padding: 0.35rem 0;
+}
+
+.label-date-calendar .react-calendar__month-view__weekdays__weekday abbr {
+  text-decoration: none;
+}
+
+.label-date-calendar .react-calendar__tile {
+  padding: 0.55rem 0.25rem;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--color-ink);
+}
+
+.label-date-calendar .react-calendar__month-view__days__day--weekend {
+  color: var(--color-ink);
+}
+
+.label-date-calendar .react-calendar__month-view__days__day--neighboring-month {
+  color: var(--color-muted);
+}
+
+.label-date-calendar .react-calendar__tile:disabled {
+  color: var(--color-muted);
+  background: transparent;
+}
+
+.label-date-calendar .react-calendar__tile:enabled:hover,
+.label-date-calendar .react-calendar__tile:enabled:focus {
+  background: var(--color-dot);
+}
+
+.label-date-calendar .react-calendar__tile--now {
+  background: var(--color-beige);
+}
+
+.label-date-calendar .react-calendar__tile--now:enabled:hover,
+.label-date-calendar .react-calendar__tile--now:enabled:focus {
+  background: var(--color-beige-dark);
+}
+
+.label-date-calendar .react-calendar__tile--active,
+.label-date-calendar .react-calendar__tile--active:enabled:hover,
+.label-date-calendar .react-calendar__tile--active:enabled:focus {
+  background: var(--color-ink);
+  color: #fff;
+}
