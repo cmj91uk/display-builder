@@ -6,7 +6,7 @@ import { App } from './App'
 import { LandingPage } from './pages/LandingPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 
-/** Vite `base` is `/display-builder/`; React Router basename has no trailing slash. */
+/** Vite `base` is `/classroom-apps/`; React Router basename has no trailing slash. */
 const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/'
 
 export const router = createBrowserRouter(

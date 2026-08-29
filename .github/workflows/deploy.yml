@@ -38,7 +38,7 @@ jobs:
       - name: Build
         run: npm run build
         # Copies index.html to 404.html so GitHub Pages serves the SPA
-        # for client routes such as /display-builder/apps/display-designer
+        # for client routes such as /classroom-apps/apps/display-designer
 
       - name: Setup Pages
         uses: actions/configure-pages@v6
