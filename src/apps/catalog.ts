@@ -20,4 +20,11 @@ export const MINI_APPS: MiniApp[] = [
       'Print four name labels per A4 page for classroom drawers and storage.',
     path: '/apps/drawer-labels',
   },
+  {
+    id: 'label-designer',
+    title: 'Label Designer',
+    description:
+      'Print lesson-objective stickers with dates and icons on A4 label sheets.',
+    path: '/apps/label-designer',
+  },
 ]
