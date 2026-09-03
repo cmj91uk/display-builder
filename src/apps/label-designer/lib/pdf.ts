@@ -1,4 +1,5 @@
 import jsPDF from 'jspdf'
+import { addPdfAttributionToAllPages } from '../../../lib/pdfAttribution'
 import { formatDate } from './dateFormatter'
 import type { LabelFormat } from './formats'
 import { getLabelDetails } from './getLabelDetails'
@@ -232,6 +233,14 @@ export async function buildPdf(
       }
     }
   }
+
+  const lastRowIndex = format.countY - 1
+  const lastLabel = getLabelDetails(format, 0, lastRowIndex)
+  addPdfAttributionToAllPages(doc, {
+    contentTopMm: format.topMargin,
+    contentBottomMm: lastLabel.top + lastLabel.height,
+    fontSizePt: 5.5,
+  })
 
   doc.save('label-sheet.pdf')
   return doc

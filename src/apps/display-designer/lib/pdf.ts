@@ -1,3 +1,4 @@
+import { addPdfAttributionToAllPages } from '../../../lib/pdfAttribution'
 import {
   DEFAULT_DISPLAY_COLORS,
   type DisplayColors,
@@ -317,6 +318,7 @@ export async function generateDisplayPdf({
     }
   }
 
+  addPdfAttributionToAllPages(pdf)
   pdf.save(filename)
 }
 

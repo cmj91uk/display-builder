@@ -1,3 +1,4 @@
+import { addPdfAttributionToAllPages } from '../../../lib/pdfAttribution'
 import { primaryFontName, waitForFont } from '../../display-designer/lib/fonts'
 
 export type DrawerLabel = {
@@ -184,5 +185,6 @@ export async function generateDrawerLabelsPdf({
     }
   }
 
+  addPdfAttributionToAllPages(pdf)
   pdf.save(filename)
 }
