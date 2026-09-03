@@ -1,8 +1,8 @@
 import { useEffect, useId, useState } from 'react'
 import { Link } from 'react-router'
 import { useDocumentTitle } from '../../useDocumentTitle'
-import { ColorField } from './components/ColorField'
-import { FontPicker } from './components/FontPicker'
+import { ColorField } from '../../components/ColorField'
+import { FontPicker } from '../../components/FontPicker'
 import {
   DEFAULT_DISPLAY_COLORS,
   DISPLAY_COLOR_FIELDS,
@@ -13,7 +13,7 @@ import {
   DEFAULT_FONT_ID,
   ensureDisplayFontsLoaded,
   getDisplayFont,
-} from './lib/fonts'
+} from '../../lib/fonts'
 import { extractDisplayCharacters } from './lib/letters'
 import {
   buildLetterSvgPreview,
@@ -29,8 +29,8 @@ import {
   type TemplateId,
 } from './lib/templates'
 
-export function DisplayDesigner() {
-  useDocumentTitle('Display Designer')
+export function BuntingLetters() {
+  useDocumentTitle('Bunting Letters')
 
   const textId = useId()
   const lettersPerPageId = useId()
@@ -63,14 +63,14 @@ export function DisplayDesigner() {
     setError(null)
     setIsGenerating(true)
     try {
-      const slug = characters.join('').slice(0, 24) || 'display'
+      const slug = characters.join('').slice(0, 24) || 'bunting'
       await generateDisplayPdf({
         text,
         lettersPerPage,
         fontFamily: selectedFont.family,
         colors,
         templateId,
-        filename: `${slug}-display.pdf`,
+        filename: `${slug}-bunting.pdf`,
       })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not generate PDF.')
@@ -92,18 +92,18 @@ export function DisplayDesigner() {
           School display
         </p>
         <h1 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">
-          Display Designer
+          Bunting Letters
         </h1>
         <p className="mt-3 max-w-xl text-base text-muted">
           Type a short message. We turn each letter into printable A4 pages
-          ready for your classroom display.
+          ready for classroom bunting.
         </p>
       </header>
 
       <main className="flex flex-1 flex-col gap-8">
         <section className="flex flex-col gap-3">
           <label htmlFor={textId} className="text-sm font-medium text-ink">
-            Display text
+            Bunting text
           </label>
           <input
             id={textId}
@@ -129,7 +129,7 @@ export function DisplayDesigner() {
 
         <section className="flex flex-col gap-3">
           <span id={styleId} className="text-sm font-medium text-ink">
-            Display style
+            Bunting style
           </span>
           <div
             role="group"
@@ -261,7 +261,7 @@ export function DisplayDesigner() {
         <section aria-label="Letter preview">
           {characters.length === 0 ? (
             <p className="rounded-lg border border-dashed border-beige-dark/50 bg-white/60 px-4 py-10 text-center text-muted">
-              Enter some letters to preview your display pages.
+              Enter some letters to preview your bunting.
             </p>
           ) : (
             <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">

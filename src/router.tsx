@@ -1,5 +1,6 @@
-import { createBrowserRouter } from 'react-router'
-import { DisplayDesigner } from './apps/display-designer/DisplayDesigner'
+import { createBrowserRouter, Navigate } from 'react-router'
+import { DisplayBanners } from './apps/display-banners/DisplayBanners'
+import { BuntingLetters } from './apps/bunting-letters/BuntingLetters'
 import { DrawerLabels } from './apps/drawer-labels/DrawerLabels'
 import { LabelDesigner } from './apps/label-designer/LabelDesigner'
 import { App } from './App'
@@ -16,9 +17,14 @@ export const router = createBrowserRouter(
       Component: App,
       children: [
         { index: true, Component: LandingPage },
-        { path: 'apps/display-designer', Component: DisplayDesigner },
+        { path: 'apps/bunting-letters', Component: BuntingLetters },
+        {
+          path: 'apps/display-designer',
+          element: <Navigate to="/apps/bunting-letters" replace />,
+        },
         { path: 'apps/drawer-labels', Component: DrawerLabels },
         { path: 'apps/label-designer', Component: LabelDesigner },
+        { path: 'apps/display-banners', Component: DisplayBanners },
         { path: '*', Component: NotFoundPage },
       ],
     },

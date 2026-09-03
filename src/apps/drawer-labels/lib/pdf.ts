@@ -1,5 +1,5 @@
 import { addPdfAttributionToAllPages } from '../../../lib/pdfAttribution'
-import { primaryFontName, waitForFont } from '../../display-designer/lib/fonts'
+import { primaryFontName, waitForFont } from '../../../lib/fonts'
 
 export type DrawerLabel = {
   id: string

@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { useFieldArray, useForm, useWatch } from 'react-hook-form'
 import { Link } from 'react-router'
-import { ColorField } from '../display-designer/components/ColorField'
+import { ColorField } from '../../components/ColorField'
 import { useDocumentTitle } from '../../useDocumentTitle'
 import { DatePicker } from './components/DatePicker'
 import { SelectMenu } from './components/SelectMenu'

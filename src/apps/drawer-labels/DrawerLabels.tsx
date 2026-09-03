@@ -1,12 +1,12 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { Link } from 'react-router'
-import { ColorField } from '../display-designer/components/ColorField'
-import { FontPicker } from '../display-designer/components/FontPicker'
+import { ColorField } from '../../components/ColorField'
+import { FontPicker } from '../../components/FontPicker'
 import {
   DEFAULT_FONT_ID,
   ensureDisplayFontsLoaded,
   getDisplayFont,
-} from '../display-designer/lib/fonts'
+} from '../../lib/fonts'
 import { useDocumentTitle } from '../../useDocumentTitle'
 import { DEFAULT_LABEL_COLOR, LABEL_COLOR_PRESETS } from './lib/colors'
 import {

@@ -39,6 +39,18 @@ export const DISPLAY_FONTS: DisplayFont[] = [
     google: 'Fredoka:wght@400;600;700',
   },
   {
+    id: 'scoutie-sans',
+    label: 'Scoutie Sans',
+    family: '"Scoutie Sans", sans-serif',
+    google: 'Scoutie+Sans:wght@400;600;700;800',
+  },
+  {
+    id: 'montserrat',
+    label: 'Montserrat',
+    family: 'Montserrat, sans-serif',
+    google: 'Montserrat:wght@400;600;700;800',
+  },
+  {
     id: 'courier',
     label: 'Courier New',
     family: 'Courier New, Courier, monospace',
@@ -101,7 +113,7 @@ export function primaryFontName(family: string): string {
   return first.replace(/^["']|["']$/g, '')
 }
 
-const GOOGLE_LINK_ID = 'display-designer-google-fonts'
+const GOOGLE_LINK_ID = 'classroom-apps-google-fonts'
 
 /** Ensure Google Fonts used by the picker are available on the page. */
 export function ensureDisplayFontsLoaded(): void {

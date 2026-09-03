@@ -7,11 +7,11 @@ export type MiniApp = {
 
 export const MINI_APPS: MiniApp[] = [
   {
-    id: 'display-designer',
-    title: 'Display Designer',
+    id: 'bunting-letters',
+    title: 'Bunting Letters',
     description:
-      'Turn a short message into printable A4 letter pages for classroom displays.',
-    path: '/apps/display-designer',
+      'Turn a short message into printable A4 letter pages for classroom bunting.',
+    path: '/apps/bunting-letters',
   },
   {
     id: 'drawer-labels',
@@ -26,5 +26,11 @@ export const MINI_APPS: MiniApp[] = [
     description:
       'Print lesson-objective stickers with dates and icons on A4 label sheets.',
     path: '/apps/label-designer',
+  },
+  {
+    id: 'display-banners',
+    title: 'Display Banners',
+    description: 'Create posters for displays with shapes and text',
+    path: '/apps/display-banners',
   },
 ]

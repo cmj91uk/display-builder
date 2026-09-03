@@ -3,7 +3,7 @@ import {
   DEFAULT_DISPLAY_COLORS,
   type DisplayColors,
 } from './colors'
-import { waitForFont } from './fonts'
+import { waitForFont } from '../../../lib/fonts'
 import { extractDisplayCharacters } from './letters'
 import {
   DEFAULT_TEMPLATE_ID,
